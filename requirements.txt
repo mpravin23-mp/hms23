@@ -1,0 +1,11 @@
+Flask
+gunicorn
+Flask-MySQLdb
+Flask-Mail
+qrcode
+Pillow
+reportlab
+requests
+twilio
+Werkzeug
+mysqlclient
