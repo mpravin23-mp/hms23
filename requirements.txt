@@ -1,6 +1,0 @@
-Flask
-gunicorn
-qrcode
-Pillow
-reportlab
-Flask-MySQLdb
