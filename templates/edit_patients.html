@@ -1,0 +1,13 @@
+<h2>Edit Patient</h2>
+
+<form action="/update_patients" method="POST">
+    ID: <input type="text" name="patient_id" value="{{ patient[0] }}" readonly><br><br>
+    Name: <input type="text" name="name" value="{{ patient[1] }}"><br><br>
+    Age: <input type="number" name="age" value="{{ patient[2] }}"><br><br>
+    
+    Phone: <input type="text" name="phone" value="{{ patient[3] }}"><br><br>
+    place: <input type="text" name="place" value="{{ patient[4] }}"><br><br>
+    Email: <input type="email" name="email" value="{{ selected_patient[7] }}"><br><br>
+    <button type="submit">Update Patient</button>
+    
+</form>

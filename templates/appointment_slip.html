@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Appointment Slip</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f9;
+}
+
+.card{
+width:600px;
+margin:40px auto;
+padding:30px;
+background:white;
+border-radius:12px;
+border:1px solid #ddd;
+box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+.header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+border-bottom:2px solid #eee;
+padding-bottom:10px;
+margin-bottom:20px;
+}
+
+.logo img{
+height:70px;
+}
+
+.hospital{
+text-align:center;
+flex-grow:1;
+}
+
+.token{
+background:#0d6efd;
+color:white;
+padding:8px 15px;
+border-radius:8px;
+font-weight:bold;
+}
+
+.detail{
+display:flex;
+justify-content:space-between;
+border-bottom:1px dashed #ccc;
+padding:8px 0;
+}
+
+.qr{
+text-align:center;
+margin-top:20px;
+}
+
+.footer{
+text-align:center;
+font-size:13px;
+margin-top:20px;
+color:#666;
+}
+
+.btn-area{
+text-align:center;
+margin-top:20px;
+}
+
+@media print{
+.btn-area{
+display:none;
+}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="header">
+
+<div class="logo">
+<img src="{{ url_for('static', filename='logo.png') }}">
+</div>
+
+<div class="hospital">
+<h4>Heal Care Hospital</h4>
+<small>24/7 Healthcare Service</small>
+</div>
+    
+<div class="token">
+{{appointment[0]}}
+</div>
+
+</div>
+
+
+<h5 class="text-center mb-3">Appointment Confirmation</h5>
+
+
+<div class="detail">
+<span><b>Patient</b></span>
+<span>{{appointment[1]}}</span>
+</div>
+
+<div class="detail">
+<span><b>Doctor</b></span>
+<span>Dr.{{appointment[4]}}</span>
+</div>
+
+<div class="detail">
+<span><b>Department</b></span>
+<span>{{appointment[5]}}</span>
+</div>
+
+<div class="detail">
+<span><b>Date</b></span>
+<span>{{appointment[6]}}</span>
+</div>
+
+<div class="detail">
+<span><b>Time</b></span>
+<span>{{appointment[7]}}</span>
+</div>
+
+<div class="detail">
+<span><b>Problem</b></span>
+<span>{{appointment[8]}}</span>
+</div>
+
+
+<div class="qr">
+
+<img src="/{{qr}}" width="120">
+<p>Scan for Appointment Verification</p>
+
+</div>
+
+
+<div class="btn-area">
+
+<button onclick="window.print()" class="btn btn-primary">
+Print
+</button>
+
+
+</div>
+
+
+<div class="footer">
+
+Please arrive <b>15 minutes before appointment time</b>.  
+Bring this slip when visiting the hospital.
+
+</div>
+
+</div>
+
+</body>
+</html>

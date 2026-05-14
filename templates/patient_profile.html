@@ -1,0 +1,38 @@
+<div class="container mt-4">
+
+<h2>🧑 Patient Full Profile</h2>
+
+<div class="card p-3 mb-3">
+    <p><b>ID:</b> {{ patient[0] }}</p>
+    <p><b>Name:</b> {{ patient[1] }}</p>
+    <p><b>Age:</b> {{ patient[2] }}</p>
+    <p><b>Phone:</b> {{ patient[3] }}</p>
+    <p><b>Place:</b> {{ patient[4] }}</p>
+    <p><b>Gender:</b> {{ patient[5] }}</p>
+</div>
+
+<h4>📅 Appointment History</h4>
+
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Doctor</th>
+<th>Department</th>
+<th>Date</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+{% for a in appointments %}
+<tr>
+<td>{{ a[0] }}</td>
+<td>{{ a[1] }}</td>
+<td>{{ a[2] }}</td>
+<td>{{ a[3] }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>

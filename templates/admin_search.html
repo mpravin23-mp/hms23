@@ -1,0 +1,114 @@
+<h2>Search Results for "{{ query }}"</h2>
+
+<!-- ================= PATIENT ================= -->
+{% if patient %}
+<div class="card p-3 mb-3">
+    <h4>🧑 Patient Details</h4>
+    <p>
+<b>ID:</b> 
+<a href="/patient_profile/{{ patient[0] }}" class="text-primary">
+    {{ patient[0] }}
+</a>
+</p>
+    <p><b>Name:</b> {{ patient[1] }}</p>
+    <p><b>Age:</b> {{ patient[2] }}</p>
+    <p><b>Phone:</b> {{ patient[3] }}</p>
+    <p><b>Place:</b> {{ patient[4] }}</p>
+    <p><b>Gender:</b> {{ patient[5] }}</p>
+    <p><b>Email:</b> {{ patient[7] }}</p>
+</div>
+
+<!-- Patient Appointments -->
+<div class="card p-3 mb-3">
+    <h5>📅 Appointments</h5>
+    {% if patient_appointments %}
+    <table class="table table-bordered">
+        <tr>
+            <th>Token</th>
+            <th>Doctor</th>
+            <th>Dept</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+        </tr>
+        {% for a in patient_appointments %}
+        <tr>
+            <td>{{ a[0] }}</td>
+            <td>{{ a[1] }}</td>
+            <td>{{ a[2] }}</td>
+            <td>{{ a[3] }}</td>
+            <td>{{ a[4] }}</td>
+            <td>{{ a[5] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No appointments found</p>
+    {% endif %}
+</div>
+
+<!-- Patient Reports -->
+<div class="card p-3 mb-3">
+    <h5>📄 Medical Reports</h5>
+    {% if reports %}
+        {% for r in reports %}
+        <div class="border p-2 mb-2">
+            <p><b>Doctor:</b> {{ r[0] }}</p>
+            <p><b>Department:</b> {{ r[1] }}</p>
+            <p><b>Report:</b> {{ r[2] }}</p>
+            <p><b>Date:</b> {{ r[3] }}</p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No reports found</p>
+    {% endif %}
+</div>
+{% endif %}
+
+
+<!-- ================= DOCTOR ================= -->
+{% if doctor %}
+<div class="card p-3 mb-3">
+    <h4>👨‍⚕️ Doctor Details</h4>
+    <p><b>ID:</b> {{ doctor[0] }}</p>
+    <p><b>Name:</b> {{ doctor[1] }}</p>
+    <p><b>Specialization:</b> {{ doctor[6] }}</p>
+    <p><b>Phone:</b> {{ doctor[3] }}</p>
+    <p><b>Email:</b> {{ doctor[2] }}</p>
+    <p><b>Shift:</b> {{ doctor[7] }} - {{ doctor[8] }}</p>
+</div>
+
+<!-- Doctor Appointments -->
+<div class="card p-3 mb-3">
+    <h5>📅 Doctor Appointments</h5>
+    {% if doctor_appointments %}
+    <table class="table table-bordered">
+        <tr>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+        </tr>
+        {% for d in doctor_appointments %}
+        <tr>
+            <td>{{ d[0] }}</td>
+            <td>{{ d[1] }}</td>
+            <td>{{ d[2] }}</td>
+            <td>{{ d[3] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No appointments found</p>
+    {% endif %}
+</div>
+{% endif %}
+
+<a href="/download_report/{{ query }}" class="btn btn-success mb-3">
+    📥 Download Report PDF
+</a>
+
+<!-- ================= NO RESULT ================= -->
+{% if not patient and not doctor %}
+<p>No results found ❌</p>
+{% endif %}

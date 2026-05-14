@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>View Appointments</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* 🌐 BODY */
+body{
+    font-family:'Poppins',sans-serif;
+    background: linear-gradient(135deg,#eef2ff,#fdf2f8);
+}
+
+/* 🔷 HEADER */
+.header{
+    backdrop-filter: blur(10px);
+    background: linear-gradient(90deg,#0d47a1,#1976d2);
+    color:white;
+    padding:12px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:999;
+    box-shadow:0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* LOGO */
+.header img{
+    height:55px;
+    border-radius:8px;
+}
+
+.header h3{
+    margin:0;
+    font-size:20px;
+    font-weight:600;
+}
+
+/* RIGHT HEADER */
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+/* BACK BUTTON */
+.back-btn{
+    background:white;
+    color:#0d47a1;
+    padding:6px 14px;
+    border-radius:20px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:500;
+    transition:0.3s;
+}
+
+.back-btn:hover{
+    background:#e3f2fd;
+    transform:translateY(-1px);
+}
+
+/* 📦 CARD */
+.card-box{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* TITLE */
+.page-title{
+    font-weight:600;
+    color:#0d47a1;
+}
+
+/* FILTER BOX */
+.filter-box{
+    background:#f9fbff;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #e5e7eb;
+}
+
+/* TABLE */
+.table{
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.table thead{
+    background:linear-gradient(90deg,#1565c0,#42a5f5);
+    color:white;
+    font-size:13px;
+}
+
+.table tbody td{
+    font-size:13px;
+}
+
+.table tbody tr{
+    transition:0.2s;
+}
+
+.table tbody tr:hover{
+    background:#f1f7ff;
+}
+
+/* BUTTONS */
+.btn{
+    border-radius:18px;
+    font-size:11px;
+    padding:5px 10px;
+}
+
+.btn-success{
+    background:#2e7d32;
+    border:none;
+}
+
+.btn-danger{
+    background:#c62828;
+    border:none;
+}
+
+.btn-primary{
+    background:#1565c0;
+    border:none;
+}
+
+.btn-warning{
+    background:#f9a825;
+    border:none;
+    color:white;
+}
+
+.btn-outline-danger{
+    border-radius:18px;
+}
+
+/* BADGES */
+.badge{
+    border-radius:15px;
+    padding:5px 10px;
+    font-size:11px;
+}
+
+/* ACTION COLUMN */
+.action-cell{
+    min-width:260px;
+}
+
+/* BUTTON LAYOUT */
+.action-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+}
+
+/* FLOAT BUTTON */
+.floating-back{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#1565c0;
+    color:white;
+    padding:10px 16px;
+    border-radius:25px;
+    text-decoration:none;
+    font-size:13px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.2);
+    transition:0.3s;
+}
+
+.floating-back:hover{
+    background:#0d47a1;
+    transform:translateY(-2px);
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- 🔷 HEADER -->
+<div class="header">
+
+    <div style="display:flex; align-items:center; gap:12px;">
+        <img src="/static/logo.png" alt="logo" style="height:129px;">
+
+        <div>
+           <h3>Heal Care Hospital</h3> 
+            <span style="font-size:14px; opacity:0.8;">Admin Panel</span>
+        </div>
+    </div>
+    <br>
+
+    <div class="header-right">
+        <a href="/admin_calendar" class="back-btn">Calendar</a>
+        <a href="/admin_dashboard" class="back-btn">⬅ Dashboard</a>
+        <span>Appointments</span>
+    </div>
+
+
+
+
+</div>
+
+<!-- 📦 MAIN -->
+<div class="container-fluid mt-4 px-4">
+
+<div class="card-box">
+
+<h3 class="text-center mb-4 page-title">📅 All Appointments</h3>
+
+<!-- 🔍 FILTER -->
+<form method="GET" class="row g-3 mb-4 filter-box">
+
+<div class="col-md-2">
+<label>From</label>
+<input type="date" name="from_date" class="form-control">
+</div>
+
+<div class="col-md-2">
+<label>To</label>
+<input type="date" name="to_date" class="form-control">
+</div>
+
+<div class="col-md-3">
+<label>Doctor</label>
+<select name="doctor_id" class="form-select">
+<option value="">All</option>
+{% for d in doctors %}
+<option value="{{d[0]}}"
+{% if selected_doctor == d[0]|string %}selected{% endif %}>
+Dr.{{d[1]}}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-3">
+<label>Department</label>
+<select name="department" class="form-select">
+<option value="">All</option>
+{% for dep in departments %}
+<option value="{{dep}}">{{dep}}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-2 d-flex align-items-end">
+<button class="btn btn-primary w-100">Filter</button>
+</div>
+
+</form>
+
+<!-- 📊 TABLE -->
+<div class="table-responsive">
+<table class="table table-bordered align-middle">
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Token</th>
+<th>Patient</th>
+<th>Age</th>
+<th>Place</th>
+<th>Doctor</th>
+<th>Specialization</th>
+<th>Date</th>
+<th>Time</th>
+<th>Problem</th>
+<th>Status</th>
+<th>cancel reson</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for a in appointments %}
+<tr>
+
+<td>{{ a[0] }}</td>
+<td><span class="badge bg-dark">{{ a[1] }}</span></td>
+<td>{{ a[2] }}</td>
+<td>{{ a[3] }}</td>
+<td>{{ a[10] }}</td>
+
+<td>
+<span 
+    data-bs-toggle="tooltip" 
+    data-bs-placement="top"
+    title="Dr. {{a[4]}} - {{a[5]}}">
+
+{% if selected_doctor and selected_doctor == a[13]|string %}
+<span class="badge bg-warning text-dark">Dr.{{ a[4] }}</span>
+{% else %}
+Dr.{{ a[4] }}
+{% endif %}
+
+</span>
+</td>
+
+<td>{{ a[5] }}</td>
+<td>{{ a[6] }}</td>
+<td>{{ a[7] }}</td>
+<td>{{ a[8] }}</td>
+
+<td>
+{% if a[12] == "Pending" %}
+<span class="badge bg-warning text-dark">Pending</span>
+{% elif a[12] == "Approved" %}
+<span class="badge bg-success">Approved</span>
+{% else %}
+<span class="badge bg-danger">{{a[12]}}</span>
+{% endif %}
+</td>
+
+<td>{{ a[15] }}</td>
+
+
+<td class="action-cell">
+<div class="action-buttons">
+    
+
+{% if a[12] == "Pending" %}
+    <!-- Pending: Approve or Reject -->
+    <a href="/admin_accept/{{a[0]}}" class="btn btn-success btn-sm">Approve</a>
+    <a href="/admin_reject/{{a[0]}}" class="btn btn-danger btn-sm">Reject</a>
+
+{% elif a[12] == "Approved" %}
+    <!-- Approved: View Form + Complete + Free Slot -->
+    <a href="/appointment_form/{{a[0]}}" class="btn btn-primary btn-sm">View Form</a>
+    <a href="/finish_appointment/{{a[0]}}" 
+       class="btn btn-success btn-sm"
+       onclick="return confirm('Mark this appointment as Completed?')">
+       Complete
+    </a>
+    <a href="/admin_free_slot/{{a[0]}}" 
+       class="btn btn-warning btn-sm"
+       onclick="return confirm('Free this slot for new appointments?')">
+       Free Slot
+    </a>
+
+<a href="/make_pending/{{a[0]}}" 
+class="btn btn-warning btn-sm"
+onclick="return confirm('Change status to Pending?')">
+Pending
+</a>
+{% elif a[12] == "Finished" or a[11] == "Completed" %}
+    <!-- Finished/Completed: View Form + Free Slot + Delete -->
+    <span class="badge bg-success">Completed</span>
+    <a href="/appointment_form/{{a[0]}}" class="btn btn-primary btn-sm">View Form</a>
+    <a href="/admin_free_slot/{{a[0]}}" 
+       class="btn btn-warning btn-sm"
+       onclick="return confirm('Free this slot for new appointments?')">
+       Free Slot
+    </a>
+    <a href="/delete_appointment/{{a[0]}}" 
+       class="btn btn-outline-danger btn-sm"
+       onclick="return confirm('Delete this appointment?')">
+       Delete
+    </a>
+
+{% else %}
+    <!-- Default fallback -->
+    <a href="/delete_appointment/{{a[0]}}" 
+       class="btn btn-outline-danger btn-sm"
+       onclick="return confirm('Delete this appointment?')">
+       Delete
+    </a>
+    <a href="/make_pending/{{a[0]}}" 
+class="btn btn-warning btn-sm"
+onclick="return confirm('Change status to Pending?')">
+Pending
+</a>
+{% endif %}
+
+</div>
+</td>
+</tr>
+{% endfor %}
+
+</tbody>
+
+</table>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- 🔵 FLOAT BUTTON -->
+<a href="/admin_dashboard" class="floating-back">⬅ Dashboard</a><br>
+
+
+
+
+
+</body>
+</html>

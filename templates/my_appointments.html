@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Appointments</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<style>
+body {
+    background: #f4f6f9;
+}
+.table td, .table th {
+    vertical-align: middle;
+}
+</style>
+
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<h2 class="text-center mb-4">My Appointments</h2>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-success text-center">{{ message }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="card shadow p-3">
+
+<table class="table table-bordered table-striped text-center">
+
+<thead class="table-dark">
+<tr>
+<th>Token</th>
+<th>Doctor</th>
+<th>Department</th>
+<th>Date</th>
+<th>Time</th>
+<th>Problem</th>
+<th>Status</th>
+<th>Action</th>
+<th>View</th> <!-- ✅ NEW COLUMN -->
+</tr>
+</thead>
+
+<tbody>
+
+{% if appointments %}
+
+{% for a in appointments %}
+<tr>
+
+<td><b>{{ a[1] }}</b></td>
+<td>{{ a[2] }}</td>
+<td>{{ a[3] }}</td>
+<td>{{ a[4] }}</td>
+<td>{{ a[5] }}</td>
+<td>{{ a[6] }}</td>
+
+<!-- STATUS -->
+<td>
+{% if a[7] == 'Pending' %}
+    <span class="text-warning fw-bold">⏳ Pending</span>
+
+{% elif a[7] == 'Approved' %}
+    <span class="text-success fw-bold">✔ Approved</span>
+
+{% elif a[7] == 'Canceled' %}
+    <span class="text-danger fw-bold">
+        ❌ Canceled ({{ a[9] if a[9] else 'Admin' }})
+    </span>
+    <br>
+    <small class="text-muted">
+        Reason: {{ a[8] if a[8] else "No reason provided" }}
+    </small>
+
+{% elif a[7] == 'Finished' %}
+    <span class="text-primary fw-bold">✅ Completed</span>
+
+{% else %}
+    <span class="text-secondary">Unknown</span>
+{% endif %}
+</td>
+
+<!-- ACTION -->
+<!-- ACTION -->
+<td>
+{% if a[7] == 'Pending' or a[7] == 'Approved' %}
+    <form method="POST" action="/cancel_appointment/{{ a[0] }}">
+        <div class="input-group input-group-sm">
+            <input type="text" name="reason" class="form-control" placeholder="Enter reason" required>
+            <button class="btn btn-danger" type="submit">Cancel</button>
+        </div>
+    </form>
+{% else %}
+    <span class="text-muted">No Action</span>
+{% endif %}
+</td>
+
+<!-- ✅ VIEW BUTTON -->
+<td>
+{% if a[7] == 'Approved' or a[7] == 'Finished' %}
+    <a href="/appointment_form/{{ a[0] }}" class="btn btn-info btn-sm">
+        View
+    </a>
+{% else %}
+    <span class="text-muted">Not Available</span>
+{% endif %}
+</td>
+
+</tr>
+{% endfor %}
+
+{% else %}
+
+<tr>
+<td colspan="9" class="text-center text-danger fw-bold">
+❌ No Appointments Found
+</td>
+</tr>
+
+{% endif %}
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="text-center mt-4">
+<a href="/book_appointment" class="btn btn-primary">Book New Appointment</a>
+<a href="/patient_dashboard" class="btn btn-secondary">Back</a>
+</div>
+
+</div>
+
+</body>
+</html>

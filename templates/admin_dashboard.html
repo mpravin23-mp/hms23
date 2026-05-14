@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heal Care Hospital - Admin</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+
+/* 🌐 BODY */
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#e0f2fe,#f8fafc);
+}
+
+/* 🔵 SIDEBAR */
+.sidebar{
+width:240px;
+height:100vh;
+position:fixed;
+background:linear-gradient(180deg,#0f172a,#1e293b);
+color:#fff;
+padding:20px;
+box-shadow:4px 0 20px rgba(0,0,0,0.2);
+}
+
+.sidebar a{
+display:flex;
+align-items:center;
+gap:10px;
+padding:12px;
+margin:6px 0;
+color:#cbd5e1;
+text-decoration:none;
+border-radius:8px;
+transition:0.3s;
+}
+
+.sidebar a:hover{
+background:linear-gradient(90deg,#2563eb,#38bdf8);
+color:#fff;
+transform:translateX(5px);
+}
+
+/* 🟢 CONTENT */
+.content{
+margin-left:240px;
+padding:20px;
+}
+
+/* 🔝 TOPBAR */
+.topbar{
+position:relative;
+z-index:1000;   /* ensures dropdown stays above cards */
+background:rgba(255,255,255,0.7);
+backdrop-filter:blur(10px);
+padding:12px 20px;
+border-radius:12px;
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+/* 🔍 SEARCH */
+.search-box{
+padding:10px 15px;
+border-radius:25px;
+border:none;
+outline:none;
+width:250px;
+background:#f1f5f9;
+box-shadow:inset 2px 2px 5px rgba(0,0,0,0.05);
+}
+
+/* 👤 PROFILE */
+.profile{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+/* 📊 CARDS */
+.card-box{
+background:linear-gradient(135deg,#ffffff,#f1f5f9);
+border-radius:15px;
+padding:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+transition:0.3s;
+position:relative;
+overflow:hidden;
+}
+
+.card-box::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:5px;
+height:100%;
+background:linear-gradient(#2563eb,#38bdf8);
+}
+
+.card-box:hover{
+transform:translateY(-8px) scale(1.02);
+}
+
+/* TABLE */
+.table{
+background:white;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.table th{
+background:#1e293b;
+color:white;
+}
+
+/* 🔔 NOTIFICATIONS */
+.notify{
+border-left:5px solid #f59e0b;
+background:#fff7ed;
+padding:10px;
+border-radius:8px;
+margin-bottom:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 🔵 SIDEBAR -->
+<div class="sidebar">
+
+<div style="text-align:center; margin-bottom:30px;">
+    <div style="background:rgba(10, 10, 10, 0.1); padding:15px; border-radius:15px;">
+        <img src="/static/logo.png" style="height:150px; border-radius:15px;">
+    </div>
+    <h5 style="margin-top:10px; font-weight:bold;">Heal Care</h5>
+    <small style="color:#94a3b8;">Hospital System</small>
+</div>
+
+<a href="#"><i class="fa fa-home"></i> Dashboard</a>
+
+<strong>Doctors</strong>
+<a href="/add_doctor"><i class="fa fa-user-plus"></i> Add Doctor</a>
+<a href="/manage_doctors"><i class="fa fa-user-md"></i> Manage Doctors</a>
+
+<strong>Patients</strong>
+<a href="/manage_patients"><i class="fa fa-users"></i> Patients</a>
+
+<strong>Appointments</strong>
+<a href="/view_appointments"><i class="fa fa-calendar"></i> Appointments</a>
+<a href="/admin_calendar"><i class="fa fa-calendar-days"></i> Calendar</a>
+
+<strong>Reports</strong>
+<a href="/appointment_report"><i class="fa fa-chart-line"></i> Reports</a>
+
+
+
+<strong>Admin</strong>
+<a href="/admin_profile"><i class="fa fa-user-shield"></i> Admin Profile</a>
+</div>
+
+<!-- 🟢 CONTENT -->
+<div class="content">
+
+<!-- 🔝 TOPBAR -->
+<div class="topbar">
+
+    <!-- 🔍 LEFT: Search -->
+    <div style="position:relative;">
+        <input type="text" id="search" class="search-box"
+               placeholder="Search Patient / Doctor"
+               onkeyup="liveSearch()">
+
+        <div id="suggestions"
+             style="position:absolute; top:110%; left:0; width:100%;
+                    background:white; border-radius:10px;
+                    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+                    max-height:200px; overflow-y:auto; z-index:1000;">
+        </div>
+    </div>
+
+    <!-- 👉 RIGHT SIDE -->
+    <div style="display:flex; align-items:center; gap:20px; margin-left:auto;">
+
+        <!-- 🏥 Logo + Name -->
+        <div style="display:flex; align-items:center; gap:12px;">
+            <img src="/static/logo.png" style="
+                height:70px;
+                border-radius:12px;
+                object-fit:contain;
+            ">
+
+            <h3 style="
+    margin:0;
+    font-family:'Poppins', sans-serif;
+    font-weight:800;
+    font-size:26px;
+    letter-spacing:1px;
+    background:linear-gradient(90deg,#2563eb,#38bdf8);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+">
+    Heal Care Hospital
+</h3>
+        </div>
+
+        <!-- 👤 Profile -->
+<div class="profile" style="position:relative; cursor:pointer;" onclick="toggleMenu()">
+    <i class="fa fa-user-circle fa-2x"></i>
+
+    <!-- DROPDOWN -->
+    <div id="profileMenu" style="
+        display:none;
+        position:absolute;
+        right:0;
+        top:45px;
+        background:white;
+        border-radius:10px;
+        box-shadow:0 8px 20px rgba(0,0,0,0.1);
+        min-width:150px;
+        overflow:hidden;
+    ">
+        <a href="/admin_profile" style="
+            display:block;
+            padding:10px;
+            text-decoration:none;
+            color:#333;
+        ">
+            <i class="fa fa-user"></i> Profile
+        </a>
+
+        <a href="/logout" style="
+            display:block;
+            padding:10px;
+            text-decoration:none;
+            color:#e53935;
+        ">
+            <i class="fa fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+
+        
+
+    </div>
+
+
+</div>
+
+
+<!-- 🔢 CARDS -->
+<div class="row g-4">
+
+<div class="col-md-3">
+<div class="card-box">
+<h6><i class="fa fa-user-md text-primary"></i> Doctors</h6>
+<h3>{{ doctors }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card-box">
+<h6><i class="fa fa-users text-success"></i> Patients</h6>
+<h3>{{ patients }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card-box">
+<h6><i class="fa fa-calendar text-warning"></i> Appointments</h6>
+<h3>{{ appointments }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card-box">
+<h6><i class="fa fa-hospital text-danger"></i> Departments</h6>
+<h3>{{ departments }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card-box">
+<h6>Pending</h6>
+<h3>{{ pending }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card-box">
+<h6>Approved</h6>
+<h3>{{ approved }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card-box">
+<h6>Today</h6>
+<h3>{{ today_appointments }}</h3>
+</div>
+</div>
+
+</div>
+
+<!-- 📋 TABLE -->
+<h5 class="mt-4">Recent Appointments</h5>
+
+<table class="table table-bordered mt-2">
+<tr>
+<th>Patient</th>
+<th>Doctor</th>
+<th>Date</th>
+<th>Status</th>
+</tr>
+
+{% for r in recent %}
+<tr>
+<td>{{ r[0] }}</td>
+<td>{{ r[1] }}</td>
+<td>{{ r[2] }}</td>
+<td>{{ r[3] }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<!-- 🔔 NOTIFICATIONS -->
+<div class="card p-3 mt-3" style="border-radius:12px;">
+<h5>🔔 Notifications</h5>
+
+{% for n in notifications %}
+<div class="notify">
+    <a href="{{ n.link }}" style="text-decoration:none; color:black;">
+        {{ n.text }}
+    </a>
+</div>
+{% endfor %}
+
+</div>
+
+</div>
+<script>
+function liveSearch() {
+    let query = document.getElementById("search").value;
+
+    if (query.length < 1) {
+        document.getElementById("suggestions").innerHTML = "";
+        return;
+    }
+
+    fetch("/live_search?q=" + query)
+    .then(res => res.json())
+    .then(data => {
+
+        let output = "";
+
+        data.forEach(item => {
+
+            output += `
+                <div style="padding:10px; cursor:pointer;"
+                     onclick="selectItem('${item.value}')">
+
+                     <b>${item.value}</b> (${item.label})
+
+                </div>
+            `;
+        });
+
+        document.getElementById("suggestions").innerHTML = output;
+    });
+}
+
+function selectItem(value) {
+    document.getElementById("search").value = value;
+    document.getElementById("suggestions").innerHTML = "";
+
+    window.location.href = "/admin_search?query=" + value;
+}
+</script>
+
+<script>
+function toggleMenu(){
+    let menu = document.getElementById("profileMenu");
+
+    if(menu.style.display === "block"){
+        menu.style.display = "none";
+    } else {
+        menu.style.display = "block";
+    }
+}
+
+// Close when clicking outside
+window.onclick = function(e){
+    if(!e.target.closest('.profile')){
+        document.getElementById("profileMenu").style.display = "none";
+    }
+}
+</script>
+</body>
+</html> 

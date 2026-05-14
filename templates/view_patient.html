@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<title>Medical Report</title>
+
+<style>
+body{
+    margin:0;
+    background:linear-gradient(135deg,#e8f0ff,#f5f7fb);
+    font-family:'Inter', sans-serif;
+}
+
+/* MAIN CARD */
+.report-container{
+    width:920px;
+    margin:30px auto;
+    background:white;
+    border-radius:18px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.12);
+    overflow:hidden;
+}
+
+/* HEADER */
+.header{
+    background:linear-gradient(90deg,#0d47a1,#1976d2);
+    color:white;
+    padding:25px 35px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    width:80px;
+    background:white;
+    padding:5px;
+    border-radius:10px;
+}
+
+.hospital-info h1{
+    margin:0;
+    font-size:24px;
+}
+
+.hospital-info p{
+    margin:2px 0;
+    font-size:12px;
+    opacity:0.9;
+}
+
+/* TITLE */
+.title{
+    text-align:center;
+    padding:25px;
+    font-size:26px;
+    font-weight:700;
+    color:#1a1a1a;
+}
+
+/* SECTION */
+.section{
+    padding:0 35px 25px;
+}
+
+.section-title{
+    font-size:16px;
+    font-weight:700;
+    color:#0d47a1;
+    margin-bottom:12px;
+    border-left:4px solid #0d47a1;
+    padding-left:10px;
+}
+
+/* PATIENT CARDS */
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.info-card{
+    background:#f6f9ff;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #e6ecff;
+}
+
+.info-card span{
+    font-weight:600;
+    color:#0d47a1;
+}
+
+/* APPOINTMENT TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+    overflow:hidden;
+    border-radius:12px;
+}
+
+th{
+    background:#0d47a1;
+    color:white;
+    padding:12px;
+    font-size:13px;
+}
+
+td{
+    padding:12px;
+    text-align:center;
+    border-bottom:1px solid #eee;
+    font-size:13px;
+}
+
+tr:hover{
+    background:#f6f9ff;
+}
+
+/* STATUS BADGES */
+.status{
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:12px;
+    color:white;
+    font-weight:600;
+}
+
+.Pending{background:#ff9800;}
+.Approved{background:#4caf50;}
+.Cancelled{background:#f44336;}
+
+/* SIGNATURE */
+.signature{
+    display:flex;
+    justify-content:space-between;
+    padding:40px 35px;
+    align-items:flex-end;
+}
+
+.sign-box{
+    width:45%;
+    text-align:center;
+}
+
+.sign{
+    font-family:'Great Vibes', cursive;
+    font-size:38px;
+    color:#000;
+}
+
+.line{
+    border-top:1.5px solid #000;
+    width:70%;
+    margin:8px auto;
+}
+
+.label{
+    font-size:12px;
+    color:#666;
+}
+
+/* SEAL */
+.seal{
+    width:140px;
+}
+
+/* BUTTONS */
+.actions{
+    text-align:center;
+    padding:20px;
+}
+
+.btn{
+    padding:10px 22px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:13px;
+    margin:5px;
+}
+
+.print{
+    background:#0d47a1;
+    color:white;
+}
+
+.back{
+    background:#e0e0e0;
+}
+
+/* PRINT */
+@media print{
+    .actions{display:none;}
+    body{background:white;}
+    .report-container{
+        box-shadow:none;
+        width:100%;
+        margin:0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="report-container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div>
+            <img src="{{ url_for('static', filename='logo.png') }}" class="logo">
+        </div>
+
+        <div class="hospital-info">
+            <h1>Heal Care Hospital</h1>
+            <p>Quality Care | Trusted Service</p>
+            <p>Date: {{ current_date }}</p>
+        </div>
+    </div>
+
+    <!-- TITLE -->
+    <div class="title">Patient Medical Report</div>
+
+    <!-- PATIENT INFO -->
+    <div class="section">
+
+        <div class="section-title">Patient Information</div>
+
+        <div class="info-grid">
+            <div class="info-card"><span>Name:</span> {{patient[1]}}</div>
+            <div class="info-card"><span>Age:</span> {{patient[2]}}</div>
+            <div class="info-card"><span>Phone:</span> {{patient[3]}}</div>
+            <div class="info-card"><span>Location:</span> {{patient[4]}}</div>
+        </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="section">
+
+        <div class="section-title">Appointment History</div>
+
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Doctor</th>
+                <th>Status</th>
+                <th>Problem</th>
+            </tr>
+
+            {% for a in appointments %}
+            <tr>
+                <td>{{ a[0] }}</td>
+                <td>{{ a[1] }}</td>
+                <td>{{ a[2] }}</td>
+                <td><span class="status {{ a[3] }}">{{ a[3] }}</span></td>
+                <td>{{ a[4] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- SIGNATURE -->
+    <div class="signature">
+
+        <div class="sign-box">
+            {% if appointments %}
+                <div class="sign">Dr. {{ appointments[0][2] }}</div>
+            {% else %}
+                <p>No Doctor Assigned</p>
+            {% endif %}
+
+            <div class="line"></div>
+            <div class="label">Doctor Signature</div>
+        </div>
+
+        <div class="sign-box">
+            <img src="{{ url_for('static', filename='seal.png') }}" class="seal">
+            <div class="label">Authorized Seal</div>
+        </div>
+
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="actions">
+        <button class="btn print" onclick="window.print()">Print Report</button>
+        <a href="/doctor_patients"><button class="btn back">Back</button></a>
+    </div>
+
+</div>
+
+</body>
+</html>

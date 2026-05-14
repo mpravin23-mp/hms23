@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Appointments</title>
+
+<style>
+
+table{
+width:90%;
+margin:auto;
+border-collapse:collapse;
+}
+
+th,td{
+border:1px solid #ccc;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#2c3e50;
+color:white;
+}
+
+.approved{color:green;font-weight:bold;}
+.pending{color:orange;font-weight:bold;}
+.rejected{color:red;font-weight:bold;}
+
+</style>
+
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Appointments for {{date}}</h2>
+
+<table>
+
+<tr>
+<th>Token</th>
+<th>Doctor</th>
+<th>Department</th>
+<th>Date</th>
+<th>Time</th>
+<th>Problem</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+{% for a in appointments %}
+
+<tr>
+
+<td>{{a[1]}}</td>
+<td>{{a[2]}}</td>
+<td>{{a[3]}}</td>
+<td>{{a[4]}}</td>
+<td>{{a[5]}}</td>
+<td>{{a[6]}}</td>
+
+<td class="
+{% if a[7]=='Approved' %}approved
+{% elif a[7]=='Pending' %}pending
+{% else %}rejected
+{% endif %}
+">
+{{a[7]}}
+</td>
+
+<td>
+
+<a href="/admin_accept/{{a[0]}}" class="btn btn-success btn-sm">
+    Approve
+</a> |
+
+<a href="/admin_reject/{{a[0]}}" class="btn btn-danger btn-sm">
+Reject</a> |
+
+<a href="/admin_free_slot/{{a[0]}}"
+onclick="return confirm('Free this slot?')">
+Free Slot
+
+
+<br><br>
+<a href="/delete_appointment/{{a[0]}}"
+onclick="return confirm('Delete this appointment?')"
+style="color:red;">
+Delete
+</a>
+
+<br>
+</a>
+<a href="/finish_appointment/{{a[0]}}"
+onclick="return confirm('Mark appointment finished?')">
+Finish
+</a>
+
+</td>
+
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+<div style="text-align:center">
+<a href="/admin_calendar">Back to Calendar</a>
+</div>
+
+</body>
+</html>

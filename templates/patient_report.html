@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Patient Medical Report</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    background:linear-gradient(135deg,#e8f0ff,#f5f7fb);
+    font-family:'Inter',sans-serif;
+}
+
+/* MAIN BOX */
+.report-container{
+    width:920px;
+    margin:30px auto;
+    background:white;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 15px 40px rgba(0,0,0,0.12);
+}
+
+/* HEADER */
+.header{
+    background:linear-gradient(90deg,#0d47a1,#1976d2);
+    color:white;
+    padding:25px 35px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    width:80px;
+    background:white;
+    padding:5px;
+    border-radius:10px;
+}
+
+.hospital-info h1{
+    margin:0;
+    font-size:24px;
+}
+
+.hospital-info p{
+    margin:2px 0;
+    font-size:12px;
+}
+
+/* TITLE */
+.title{
+    text-align:center;
+    padding:25px;
+    font-size:26px;
+    font-weight:700;
+    color:#111;
+}
+
+/* SECTION */
+.section{
+    padding:0 35px 25px;
+}
+
+.section-title{
+    font-size:16px;
+    font-weight:700;
+    color:#0d47a1;
+    border-left:4px solid #0d47a1;
+    padding-left:10px;
+    margin-bottom:15px;
+}
+
+/* INFO GRID */
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.info-card{
+    background:#f7f9ff;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #e6ecff;
+}
+
+.info-card span{
+    font-weight:700;
+    color:#0d47a1;
+}
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#0d47a1;
+    color:white;
+    padding:12px;
+    font-size:13px;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    text-align:center;
+    font-size:13px;
+}
+
+tr:hover{
+    background:#f7f9ff;
+}
+
+/* STATUS */
+.status{
+    padding:5px 12px;
+    border-radius:20px;
+    color:white;
+    font-size:12px;
+    font-weight:600;
+}
+
+.Pending{background:#ff9800;}
+.Approved{background:#4caf50;}
+.Completed{background:#2196f3;}
+.Cancelled{background:#f44336;}
+
+/* SIGNATURE */
+.signature{
+    display:flex;
+    justify-content:space-between;
+    padding:40px 35px;
+    align-items:flex-end;
+}
+
+.sign-box{
+    width:45%;
+    text-align:center;
+}
+
+.sign{
+    font-family:'Great Vibes',cursive;
+    font-size:38px;
+}
+
+.line{
+    border-top:1px solid #000;
+    width:70%;
+    margin:8px auto;
+}
+
+.label{
+    font-size:12px;
+    color:#666;
+}
+
+.seal{
+    width:140px;
+}
+
+/* BUTTONS */
+.actions{
+    text-align:center;
+    padding:20px;
+}
+
+.btn{
+    padding:10px 22px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:13px;
+    margin:5px;
+    text-decoration:none;
+}
+
+.print{
+    background:#0d47a1;
+    color:white;
+}
+
+.back{
+    background:#ddd;
+    color:black;
+}
+
+/* PRINT */
+@media print{
+    .actions{
+        display:none;
+    }
+
+    body{
+        background:white;
+    }
+
+    .report-container{
+        width:100%;
+        margin:0;
+        box-shadow:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="report-container">
+
+    <!-- HEADER -->
+    <div class="header">
+
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo">
+
+        <div class="hospital-info">
+            <h1>Heal Care Hospital</h1>
+            <p>Quality Care | Trusted Service</p>
+            <p>Date: {{ current_date }}</p>
+        </div>
+
+    </div>
+
+    <!-- TITLE -->
+    <div class="title">Patient Medical Report</div>
+
+    <!-- PATIENT INFO -->
+    <div class="section">
+
+        <div class="section-title">Patient Information</div>
+
+        <div class="info-grid">
+
+            <div class="info-card">
+                <span>Name:</span> {{ patient[1] }}
+            </div>
+
+            <div class="info-card">
+                <span>Age:</span> {{ patient[2] }}
+            </div>
+
+            <div class="info-card">
+                <span>Phone:</span> {{ patient[3] }}
+            </div>
+
+            <div class="info-card">
+                <span>Location:</span> {{ patient[4] }}
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- APPOINTMENT HISTORY -->
+    <div class="section">
+
+        <div class="section-title">Appointment History</div>
+
+        <table>
+
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Doctor</th>
+                <th>Status</th>
+                <th>Problem</th>
+            </tr>
+
+            {% for a in appointments %}
+            <tr>
+
+                <td>{{ a[0] }}</td>
+                <td>{{ a[1] }}</td>
+                <td>{{ a[2] }}</td>
+
+                <td>
+                    <span class="status {{ a[3] }}">
+                        {{ a[3] }}
+                    </span>
+                </td>
+
+                <td>{{ a[4] }}</td>
+
+            </tr>
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <!-- SIGNATURE -->
+    <div class="signature">
+
+        <div class="sign-box">
+
+            {% if appointments %}
+                <div class="sign">Dr. {{ appointments[0][2] }}</div>
+            {% else %}
+                <div class="sign">Doctor</div>
+            {% endif %}
+
+            <div class="line"></div>
+            <div class="label">Doctor Signature</div>
+
+        </div>
+
+        <div class="sign-box">
+
+            <img src="{{ url_for('static', filename='seal.png') }}" class="seal">
+
+            <div class="label">Authorized Seal</div>
+
+        </div>
+
+    </div>
+
+    <!-- BUTTON -->
+    <div class="actions">
+
+        <button onclick="window.print()" class="btn print">
+            Print Report
+        </button>
+
+        <a href="/patient_dashboard" class="btn back">
+            Back
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

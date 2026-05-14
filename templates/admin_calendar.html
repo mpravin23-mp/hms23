@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Appointment Calendar</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+    font-family:'Poppins',sans-serif;
+    background:#f4f6f9;
+    margin:0;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 30px;
+    background:white;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+.title{
+    font-size:20px;
+    font-weight:600;
+    color:#2c3e50;
+}
+
+.nav-btn{
+    padding:6px 14px;
+    border:none;
+    background:#6c7a89;
+    color:white;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.nav-btn:hover{
+    background:#4b5b6a;
+}
+
+/* CALENDAR BOX */
+.calendar{
+    width:95%;
+    margin:20px auto;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 5px 20px rgba(0,0,0,0.05);
+}
+
+/* DAYS */
+.days{
+    display:grid;
+    grid-template-columns: repeat(7,1fr);
+    background:#f0f2f5;
+    text-align:center;
+    padding:12px 0;
+    font-weight:600;
+    color:#555;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns: repeat(7,1fr);
+}
+
+/* CELL */
+.cell{
+    height:130px;
+    border:1px solid #eee;
+    padding:10px;
+    position:relative;
+    transition:0.2s;
+}
+
+.cell:hover{
+    background:#f9fbfd;
+}
+
+/* EMPTY CELL */
+.empty{
+    background:#fafafa;
+}
+
+/* DAY NUMBER */
+.day{
+    font-weight:600;
+    font-size:15px;
+    color:#2c3e50;
+}
+
+/* STATUS BOX */
+.status-box{
+    margin-top:8px;
+    font-size:11px;
+    line-height:1.6;
+}
+
+/* STATUS COLORS (SOFT) */
+.pending{
+    color:#b58b00;
+}
+
+.approved{
+    color:#2e7d32;
+}
+
+.rejected{
+    color:#c62828;
+}
+
+.finished{
+    color:#6a1b9a;
+}
+
+.full{
+    color:#37474f;
+    font-weight:600;
+}
+
+/* HEATMAP (VERY LIGHT) */
+.low{ background:#f8fbff; }
+.medium{ background:#eef4fa; }
+.high{ background:#e3edf7; }
+.very-high{ background:#d6e4f2; }
+
+/* LINK */
+.cell a{
+    text-decoration:none;
+    color:inherit;
+    display:block;
+    height:100%;
+}
+
+/* BACK BUTTON */
+.back{
+    display:block;
+    width:180px;
+    margin:20px auto;
+    text-align:center;
+    padding:10px;
+    background:#6c7a89;
+    color:white;
+    border-radius:20px;
+    text-decoration:none;
+}
+
+.back:hover{
+    background:#4b5b6a;
+}
+</style>
+</head>
+
+<body>
+
+
+
+
+<!-- HEADER -->
+<div class="header">
+<a href="/admin_calendar?month={{month-1 if month>1 else 12}}&year={{year if month>1 else year-1}}">
+<button class="nav-btn">⬅ Prev</button>
+</a>
+
+<div class="title">📅 {{month}} / {{year}}</div>
+
+<a href="/admin_calendar?month={{month+1 if month<12 else 1}}&year={{year if month<12 else year+1}}">
+<button class="nav-btn">Next ➡</button>
+</a>
+</div>
+
+<!-- CALENDAR -->
+<div class="calendar">
+<div class="days">
+<div>Mon</div><div>Tue</div><div>Wed</div>
+<div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+</div>
+
+<div class="grid">
+{% for week in calendar %}
+{% for day in week %}
+{% if day != 0 %}
+
+{% set total = counts.get(day,0) %}
+{% set p = pending_counts.get(day,0) %}
+{% set a = approved_counts.get(day,0) %}
+{% set r = rejected_counts.get(day,0) %}
+{% set f = finished_counts.get(day,0) %}
+
+{% if total == 0 %}
+{% set heat = '' %}
+{% elif total <= 3 %}
+{% set heat = 'low' %}
+{% elif total <= 6 %}
+{% set heat = 'medium' %}
+{% elif total <= 10 %}
+{% set heat = 'high' %}
+{% else %}
+{% set heat = 'very-high' %}
+{% endif %}
+
+<div class="cell">
+<a href="/admin_day_appointments/{{year}}-{{'%02d'|format(month)}}-{{'%02d'|format(day)}}">
+<div class="day">{{day}}</div>
+<div class="status-box">
+{% if p>0 %}<div class="pending">• Pending: {{p}}</div>{% endif %}
+{% if a>0 %}<div class="approved">• Approved: {{a}}</div>{% endif %}
+{% if r>0 %}<div class="rejected">• Rejected: {{r}}</div>{% endif %}
+{% if f>0 %}<div class="finished">• Finished: {{f}}</div>{% endif %}
+{% if total>=10 %}<div class="full">• Slots Full</div>{% endif %}
+</div>
+</a>
+</div>
+
+{% else %}
+<div class="cell empty"></div>
+{% endif %}
+{% endfor %}
+{% endfor %}
+</div>
+</div>
+
+<a href="/admin_dashboard" class="back">⬅ Dashboard</a>
+
+</body>
+</html>

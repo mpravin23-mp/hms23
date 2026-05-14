@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Doctor</title>
+</head>
+<body>
+    <h2>Edit Doctor</h2>
+
+    <form method="POST" action="/update_doctor">
+        <!-- Hidden field to pass doctor_id -->
+        <input type="hidden" name="doctor_id" value="{{ doctor[0] }}">
+
+        <label>Name</label><br>
+        <input type="text" name="name" value="{{ doctor[1] }}" required><br><br>
+
+        <label>Email</label><br>
+        <input type="email" name="email" value="{{ doctor[2] }}"><br><br>
+
+        <label>Phone</label><br>
+        <input type="text" name="phone" value="{{ doctor[3] }}"><br><br>
+
+        <label>Username</label><br>
+        <input type="text" name="username" value="{{ doctor[4] }}"><br><br>
+
+        <label>Password</label><br>
+        <input type="password" name="password" value="{{ doctor[5] }}"><br><br>
+
+        <label>Specialization</label><br>
+        <input type="text" name="specialization" value="{{ doctor[6] }}"><br><br>
+
+        <!-- Shift Type -->
+        <label>Shift Type</label><br>
+        <select id="shift_type" name="shift_type">
+            <option value="">--Select--</option>
+            <option value="Morning" {% if doctor[8]=='Morning' %}selected{% endif %}>Morning</option>
+            <option value="Evening" {% if doctor[8]=='Evening' %}selected{% endif %}>Evening</option>
+            <option value="Night" {% if doctor[8]=='Night' %}selected{% endif %}>Night</option>
+        </select><br><br>
+
+        <label>Shift Start</label><br>
+        <input type="time" id="shift_start_hm" name="shift_start_hm" value="{{ doctor[9] }}"><br><br>
+
+        <label>Shift End</label><br>
+        <input type="time" id="shift_end_hm" name="shift_end_hm" value="{{ doctor[10] }}"><br><br>
+
+        <button type="submit">Update Doctor</button>
+    </form>
+
+    <script>
+        document.getElementById("shift_type").addEventListener("change", function() {
+            const shiftType = this.value;
+            if (shiftType) {
+                fetch(`/get_shift_times/${shiftType}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("shift_start_hm").value = data.start;
+                        document.getElementById("shift_end_hm").value = data.end;
+                    })
+                    .catch(err => console.error("Error fetching shift times:", err));
+            } else {
+                document.getElementById("shift_start_hm").value = "";
+                document.getElementById("shift_end_hm").value = "";
+            }
+        });
+    </script>
+</body>
+</html>

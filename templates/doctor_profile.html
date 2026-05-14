@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Doctor Profile</title>
+
+<style>
+
+/* 🌐 BODY */
+body{
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#eef2f7,#f4f6f9);
+    margin:0;
+}
+
+/* 📦 CONTAINER */
+form{
+    width: 650px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+/* TITLE */
+h2{
+    text-align:center;
+    color:#0d6efd;
+    margin-top:25px;
+}
+
+/* INPUTS */
+input{
+    width:100%;
+    padding:10px;
+    margin-top:6px;
+    margin-bottom:15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    outline:none;
+    transition:0.2s;
+}
+
+input:focus{
+    border:1px solid #0d6efd;
+    box-shadow:0 0 5px rgba(13,110,253,0.3);
+}
+
+/* LABEL TEXT */
+label{
+    font-weight:600;
+    color:#333;
+}
+
+/* PROFILE IMAGE */
+img{
+    border:3px solid #0d6efd;
+    padding:3px;
+    background:white;
+}
+
+/* BUTTON */
+button[type="submit"]{
+    width:100%;
+    padding:12px;
+    background:linear-gradient(90deg,#0d6efd,#084298);
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button[type="submit"]:hover{
+    background:#084298;
+}
+
+/* EYE BUTTON */
+button[type="button"]{
+    margin-top:-10px;
+    margin-bottom:10px;
+    padding:6px 10px;
+    border:none;
+    border-radius:6px;
+    background:#eee;
+    cursor:pointer;
+}
+
+/* STRENGTH TEXT */
+#strengthMessage{
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+/* BACK BUTTON */
+a.btn{
+    display:block;
+    width:650px;
+    margin:20px auto;
+    text-align:center;
+    padding:10px;
+    background:#6c757d;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+}
+
+a.btn:hover{
+    background:#5a6268;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Doctor Profile</h2>
+
+<form method="POST" action="/update_doctor_profile" enctype="multipart/form-data">
+
+<!-- 👤 Profile Image -->
+<div class="text-center mb-3" style="text-align:center;">
+<img src="{{ url_for('static', filename='uploads/' ~ doctor[12]) if doctor[12] else url_for('static', filename='default.png') }}"
+     width="120" height="120"
+     style="border-radius:50%; object-fit:cover;">     
+</div>
+
+<div class="mb-3">
+    <label>Upload Profile Picture</label>
+    <input type="file" name="profile_pic" class="form-control">
+</div>
+
+Doctor ID <br>
+<input type="text" value="{{doctor[0]}}" readonly><br><br>
+
+Name <br>
+<input type="text" name="name" value="{{doctor[1]}}"><br><br>
+
+Specialization <br>
+<input type="text" value="{{doctor[6]}}" readonly><br><br>
+
+Phone <br>
+<input type="text" name="phone" value="{{doctor[3]}}"><br><br>
+
+Email <br>
+<input type="text" name="email" value="{{doctor[2]}}"><br><br>
+
+Password<br>
+<input type="password" id="password" name="password" 
+       value="{{doctor[5]}}" onkeyup="checkPasswordStrength()" required>
+<button type="button" onclick="togglePassword()">👁</button>
+<div id="strengthMessage"></div><br>
+
+Confirm Password<br>
+<input type="password" id="confirm_password" name="confirm_password" 
+       value="{{doctor[5]}}" required>
+<button type="button" onclick="toggleConfirmPassword()">👁</button><br><br>
+
+Shift Start <br>
+<input type="text" value="{{doctor[9]}}" readonly><br><br>
+
+Shift End <br>
+<input type="text" value="{{doctor[10]}}" readonly><br><br>
+
+Shift Type <br>
+<input type="text" value="{{doctor[8]}}" readonly><br><br>
+
+<button type="submit">Update Profile</button>
+
+</form>
+
+<script>
+
+function checkPasswordStrength(){
+    let password = document.getElementById("password").value;
+    let strength = document.getElementById("strengthMessage");
+    let score = 0;
+
+    if(password.length >= 8) score++;
+    if(password.match(/[a-z]/)) score++;
+    if(password.match(/[A-Z]/)) score++;
+    if(password.match(/[0-9]/)) score++;
+    if(password.match(/[^a-zA-Z0-9]/)) score++;
+
+    if(score <= 2) strength.innerHTML = "<span style='color:red'>Weak Password</span>";
+    else if(score <= 4) strength.innerHTML = "<span style='color:orange'>Medium Password</span>";
+    else strength.innerHTML = "<span style='color:green'>Strong Password</span>";
+}
+
+function togglePassword() {
+    const pass = document.getElementById("password");
+    pass.type = pass.type === "password" ? "text" : "password";
+}
+
+function toggleConfirmPassword() {
+    const pass = document.getElementById("confirm_password");
+    pass.type = pass.type === "password" ? "text" : "password";
+}
+
+// Auto-fill confirm password
+document.getElementById("password").addEventListener("keyup", function(){
+    document.getElementById("confirm_password").value = this.value;
+});
+
+document.getElementById("confirm_password").addEventListener("keyup", function(){
+    let password = document.getElementById("password").value;
+    let confirmPassword = this.value;
+
+    if(password !== confirmPassword){
+        this.style.border = "2px solid red";
+    } else {
+        this.style.border = "2px solid green";
+    }
+});
+
+</script>
+
+<a href="/doctor_dashboard" class="btn btn-secondary">
+Back to Dashboard
+</a>
+
+</body>
+</html>

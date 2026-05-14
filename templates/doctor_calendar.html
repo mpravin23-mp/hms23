@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Doctor Calendar</title>
+
+<style>
+
+body{
+font-family:Arial;
+}
+
+/* Header */
+.calendar-header{
+text-align:center;
+margin:20px;
+}
+
+.nav-btn{
+padding:8px 15px;
+background:#2c3e50;
+color:white;
+text-decoration:none;
+border-radius:5px;
+margin:5px;
+}
+
+/* Calendar */
+table{
+width:90%;
+margin:auto;
+border-collapse:collapse;
+}
+
+th,td{
+border:1px solid #ccc;
+height:90px;
+vertical-align:top;
+padding:5px;
+text-align:left;
+}
+
+th{
+background:#2c3e50;
+color:white;
+text-align:center;
+}
+
+/* Date */
+.date{
+font-weight:bold;
+}
+
+/* Pending Highlight */
+.pending-count{
+color:red;
+font-size:13px;
+font-weight:bold;
+}
+
+/* Highlight box */
+.highlight{
+background:#ffe6e6;
+border-radius:5px;
+}
+
+.date-link{
+text-decoration:none;
+color:black;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="calendar-header">
+
+<a class="nav-btn" href="/doctor_calendar?month={{prev_month}}&year={{prev_year}}">
+⬅️ Prev
+</a>
+
+<b style="font-size:20px;">{{month}} / {{year}}</b>
+
+<a class="nav-btn" href="/doctor_calendar?month={{next_month}}&year={{next_year}}">
+Next ➡️
+</a>
+
+</div>
+
+<table>
+
+<tr>
+<th>Mon</th>
+<th>Tue</th>
+<th>Wed</th>
+<th>Thu</th>
+<th>Fri</th>
+<th>Sat</th>
+<th>Sun</th>
+</tr>
+
+{% for week in calendar %}
+<tr>
+
+{% for day in week %}
+<td class="{% if day != 0 and day in pending_data %}highlight{% endif %}">
+{% if day != 0 %}
+
+<a class="date-link"
+href="/doctor_calendar?date={{year}}-{{'%02d'%month}}-{{'%02d'%day}}">
+<span class="date">{{day}}</span>
+</a>
+
+<br>
+
+{% if pending_data.get(day) %}
+<span class="pending-count">
+(Pending: {{pending_data[day]}})
+</span>
+{% endif %}
+
+{% endif %}
+
+</td>
+{% endfor %}
+
+</tr>
+{% endfor %}
+
+</table>
+
+<!-- 📋 Appointments -->
+{% if appointments %}
+
+<h3 style="text-align:center;">Appointments on {{selected_date}}</h3>
+
+<table>
+<tr>
+<th>Token</th>
+<th>Patient</th>
+<th>Date</th>
+<th>Time</th>
+<th>Problem</th>
+<th>Status</th>
+</tr>
+
+{% for a in appointments %}
+<tr>
+<td>{{a[0]}}</td>
+<td>{{a[1]}}</td>
+<td>{{a[2]}}</td>
+<td>{{a[3]}}</td>
+<td>{{a[4]}}</td>
+<td>{{a[5]}}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endif %}
+
+<br>
+
+<div style="text-align:center">
+<a href="/doctor_dashboard">Back</a>
+</div>
+
+</body>
+</html>

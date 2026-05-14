@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Reschedule Appointment</title>
+
+<script>
+
+function loadDoctors(){
+
+    var dept = document.getElementById("department").value;
+
+    fetch(`/get_doctors/${dept}`)
+    .then(response=>response.json())
+    .then(data=>{
+
+        var doctorDropdown=document.getElementById("doctor");
+        doctorDropdown.innerHTML="<option>Select Doctor</option>";
+
+        data.doctors.forEach(function(d){
+
+            var option=document.createElement("option");
+            option.value=d.id;
+            option.text=d.name;
+
+            doctorDropdown.appendChild(option);
+
+        });
+
+    });
+
+}
+
+function loadSlots(){
+
+    var doctor=document.getElementById("doctor").value;
+    var date=document.getElementById("date").value;
+
+    if(doctor && date){
+
+        fetch(`/get_slots/${doctor}/${date}`)
+        .then(response=>response.json())
+        .then(data=>{
+
+            var timeDropdown=document.getElementById("time");
+            timeDropdown.innerHTML="<option>Select Time</option>";
+
+            data.slots.forEach(function(slot){
+
+                var option=document.createElement("option");
+                option.value=slot;
+                option.text=slot;
+
+                timeDropdown.appendChild(option);
+
+            });
+
+        });
+
+    }
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<h2>Reschedule Appointment</h2>
+
+<form method="POST">
+
+<label>Department</label><br>
+
+<select name="department" id="department" onchange="loadDoctors()" required>
+<option>Select Department</option>
+
+{% for d in departments %}
+<option value="{{d}}">{{d}}</option>
+{% endfor %}
+
+</select>
+
+<br><br>
+
+<label>Doctor</label><br>
+
+<select name="doctor" id="doctor" onchange="loadSlots()" required>
+<option>Select Doctor</option>
+</select>
+
+<br><br>
+
+<label>Date</label><br>
+
+<input type="date" name="date" id="date" onchange="loadSlots()" required>
+
+<br><br>
+
+<label>Appointment Time</label><br>
+
+<select name="time" id="time" required>
+<option>Select Time</option>
+</select>
+
+<br><br>
+
+<button type="submit">Update Appointment</button>
+
+<a href="/my_appointments">Back</a>
+
+</form>
+
+</body>
+</html>
